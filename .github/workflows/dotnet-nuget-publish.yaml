@@ -32,7 +32,8 @@ jobs:
 		needs: discover
 		steps:
 			-	uses: actions/checkout@v4
-				with: fetch-depth: 0
+				with: 
+					fetch-depth: 0
 			
 			-	name: Set env vars
 				run: |
@@ -64,7 +65,7 @@ jobs:
 					DOTNET_ROOT: ${{ runner.tool_cache}}/dotnet
 			
 			-   name: Tag version
-				if: github.ref == 'refs/heads/main' && github.event_name != 'pull-request'
+				if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
 				run: |
 					git tag ${{ needs.discover.outputs.version_tag }}
                     git push origin --tags
