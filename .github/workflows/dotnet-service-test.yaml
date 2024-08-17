@@ -37,10 +37,10 @@ jobs:
                 env:
                     NUGET_AUTH_TOKEN: ${{ secrets.ORG_NUGET_TOKEN }}
 
-            -	name: Test
+            -   name: Test
                 run: dotnet test --logger "trx" --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
-
-                -   name: Check files
+            
+            -   name: Check files
                 if: always() && !cancelled()
                 id: check_files
                 uses: andstor/file-existence-action@v3.0.0

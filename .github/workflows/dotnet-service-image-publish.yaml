@@ -6,7 +6,7 @@ on:
     workflow_call:
         inputs:
             repository:
-                description: "Dockerhub requires the repo to start with the user. Otherwise it won't auth. e.g: 'FamilySync/services-identity'"
+                description: "Dockerhub requires the repo to start with the user. Otherwise it won't auth. e.g: FamilySync/services-identity"
                 required: true
                 type: string
         secrets:
