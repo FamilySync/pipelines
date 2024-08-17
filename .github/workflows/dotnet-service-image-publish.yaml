@@ -21,11 +21,11 @@ concurrency:
 
 jobs:
     discover:
-        uses: FamilySync/pipelines/.github/workflows/dotnet/git-versioning.yaml@main
+        uses: FamilySync/pipelines/.github/workflows/dotnet-git-versioning.yaml@main
         secrets: inherit
     
     test:
-        uses: FamilySync/pipelines/.github/workflows/dotnet/service-test.yaml@main
+        uses: FamilySync/pipelines/.github/workflows/dotnet-service-test.yaml@main
         secrets: inherit
 
     build-and-publish:

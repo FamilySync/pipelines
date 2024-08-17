@@ -3,12 +3,7 @@ description: Publishes NuGet(s) to github
 author: Nichals Hoberg
 
 on:
-	workflow_call:
-
-# Only allow one deployment task to run at a time
-concurrency:
-    group: ${{ inputs.repository }}-${{ github.ref }}
-    cancel-in-progress: true
+    workflow_call:
 
 permissions:
 	contents: write
@@ -22,11 +17,16 @@ env:
 	TESTCONTAINERS_RYUK_DISABLED: "true"
 	NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages # Ensures that NuGet packages are always stored in the location
 
+# Only allow one deployment task to run at a time
+concurrency:
+	group: ${{ inputs.repository }}-${{ github.ref }}
+    cancel-in-progress: true
+
 jobs:
-	discover:
-		uses: FamilySync/dotnet-pipeline/.github/workflows/git-versioning.yaml@main
-		secrets: inherit
-	
+    discover:
+        uses: FamilySync/pipelines/.github/workflows/dotnet-git-versioning.yaml@main
+        secrets: inherit
+
 	build-and-publish:
 		runs-on: ubuntu-latest
 		needs: discover
