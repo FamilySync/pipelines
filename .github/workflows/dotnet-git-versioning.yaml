@@ -11,7 +11,7 @@ jobs:
     version:
         runs-on: ubuntu-latest
         outputs:
-            version: ${{ steps.version.outputs.result }}
+            version: ${{ steps.format_version.outputs.version }}
             version_tag: ${{ steps.semver.outputs.version_tag }}
         steps:
             -   uses: actions/checkout@v4
@@ -26,7 +26,7 @@ jobs:
                     minor_pattern: "minor:"
                     version_format: "${major}.${minor}.${patch}"
             -   name: Set version output
-                id: set_version
+                id: format_version
                 run: |
                         if [ "${{ github.ref }}" = "refs/heads/main" ]; then
                             echo "version=${{ steps.semver.outputs.version }}" >> $GITHUB_OUTPUT
