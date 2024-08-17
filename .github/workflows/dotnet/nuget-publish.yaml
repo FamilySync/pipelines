@@ -36,8 +36,8 @@ jobs:
 			
 			-	name: Set env vars
 				run: |
-                    echo "NUGET_USERNAME=${{ vars.NUGET_USERNAME }}" >> $GITHUB_ENV
-                    echo "NUGET_TOKEN=${{ secrets.ORG_NUGET_TOKEN }}" >> $GITHUB_ENV
+					echo "NUGET_USERNAME=${{ vars.NUGET_USERNAME }}" >> $GITHUB_ENV
+					echo "NUGET_TOKEN=${{ secrets.ORG_NUGET_TOKEN }}" >> $GITHUB_ENV
 				
 			-	name: Configure dotnet
 				uses: actions/setup-dotnet@v4
@@ -46,25 +46,25 @@ jobs:
 				env:
 					NUGET_AUTH_TOKEN: ${{ secrets.ORG_NUGET_TOKEN }}
 
-            -   name: Restore dependencies
-                run: dotnet restore
-        
-            -   name: Build
-                run: dotnet build --configuration Release --no-restore
-        
-            -   name: Test
-                run: dotnet test --no-restore --verbosity normal
-            
-            -   name: Pack
-                run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ needs.discover.outputs.version }} --output ./nupkgs
-            
-            -   name: Publish NuGet Packages
-                run: find ./nupkgs -name "*.nupkg" -exec dotnet nuget push {} --source "github" --skip-duplicate --api-key ${{ secrets.ORG_NUGET_TOKEN }} \;
-                env:
-                    DOTNET_ROOT: ${{ runner.tool_cache}}/dotnet
-            
-            -   name: Tag version
-                if: github.ref == 'refs/heads/main' && github.event_name != 'pull-request'
-                run: |
-                    git tag ${{ needs.discover.outputs.version_tag }}
+			-   name: Restore dependencies
+				run: dotnet restore
+		
+			-   name: Build
+				run: dotnet build --configuration Release --no-restore
+		
+			-   name: Test
+				run: dotnet test --no-restore --verbosity normal
+			
+			-   name: Pack
+				run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ needs.discover.outputs.version }} --output ./nupkgs
+			
+			-   name: Publish NuGet Packages
+				run: find ./nupkgs -name "*.nupkg" -exec dotnet nuget push {} --source "github" --skip-duplicate --api-key ${{ secrets.ORG_NUGET_TOKEN }} \;
+				env:
+					DOTNET_ROOT: ${{ runner.tool_cache}}/dotnet
+			
+			-   name: Tag version
+				if: github.ref == 'refs/heads/main' && github.event_name != 'pull-request'
+				run: |
+					git tag ${{ needs.discover.outputs.version_tag }}
                     git push origin --tags
