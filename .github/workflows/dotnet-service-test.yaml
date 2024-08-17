@@ -1,6 +1,4 @@
 name: Dotnet Services Tests
-description: Runs all tests in a service, making sure they all pass and generates a report.
-author: Nichals Hoberg
 
 on:
     workflow_call:

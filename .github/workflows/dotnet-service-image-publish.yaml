@@ -1,6 +1,4 @@
 name: Publish Service Image
-description: Build Docker image and publish it to Dockerhub
-author: Nichals Hoberg
 
 on:
     workflow_call:

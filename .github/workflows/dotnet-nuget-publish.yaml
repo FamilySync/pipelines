@@ -1,6 +1,4 @@
 name: Build & Publish NuGet
-description: Publishes NuGet(s) to GitHub
-author: Nichals Hoberg
 
 on:
   workflow_call:

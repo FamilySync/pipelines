@@ -1,6 +1,4 @@
 name: Determine build version
-description: Determines the proper build version using PaulHatch/semantic-version
-author: Nichals Hoberg
 
 on:
     workflow_call:
