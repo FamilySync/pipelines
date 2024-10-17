@@ -4,7 +4,7 @@ on:
     workflow_call:
         inputs:
             repository:
-                description: "Dockerhub requires the repo to start with the user. Otherwise it won't auth. e.g: FamilySync/services-identity"
+                description: "Dockerhub requires the repo to start with the user but this is handled in the workflow using github var."
                 required: true
                 type: string
         secrets:
@@ -19,11 +19,11 @@ concurrency:
 
 jobs:
     discover:
-        uses: FamilySync/pipelines/.github/workflows/dotnet-git-versioning.yaml@main
+        uses: Greboh-School/shared-pipelines/.github/workflows/dotnet-git-versioning.yaml@main
         secrets: inherit
     
     test:
-        uses: FamilySync/pipelines/.github/workflows/dotnet-service-test.yaml@main
+        uses: Greboh-School/shared-pipelines/.github/workflows/dotnet-service-test.yaml@main
         secrets: inherit
 
     build-and-publish:
@@ -38,14 +38,14 @@ jobs:
             -   name: Set env vars
                 run: |
                     echo "NUGET_USERNAME=${{ vars.NUGET_USERNAME }}" >> $GITHUB_ENV
-                    echo "NUGET_TOKEN=${{ secrets.ORG_FULL_ACCESS_TOKEN }}" >> $GITHUB_ENV
+                    echo "NUGET_TOKEN=${{ secrets.ORG_NUGET_TOKEN }}" >> $GITHUB_ENV
 
             -   name: Configure dotnet
                 uses: actions/setup-dotnet@v4
                 with:
                     source-url: ${{ vars.NUGET_LOCATION }}
                 env:
-                    NUGET_AUTH_TOKEN: ${{ secrets.ORG_FULL_ACCESS_TOKEN }}
+                    NUGET_AUTH_TOKEN: ${{ secrets.ORG_NUGET_TOKEN }}
     
             -   name: Configure QEMU
                 uses: docker/setup-qemu-action@v3
@@ -65,13 +65,13 @@ jobs:
                 with:
                     push: true
                     tags: |
-                        ${{ inputs.repository }}:latest
-                        ${{ inputs.repository }}:edge
-                        ${{ inputs.repository }}:${{ needs.discover.outputs.version }}
+                        ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.repository }}:latest
+                        ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.repository }}:edge
+                        ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.repository }}:${{ needs.discover.outputs.version }}
                     build-args: |
                         version=${{ needs.discover.outputs.version }}
                         NUGET_USERNAME=${{ vars.NUGET_USERNAME }}
-                        NUGET_TOKEN=${{ secrets.ORG_FULL_ACCESS_TOKEN }}
+                        NUGET_TOKEN=${{ secrets.ORG_NUGET_TOKEN }}
 
             -   name: Build and push docker image pre-release
                 if: github.event_name == 'pull_request'
@@ -79,11 +79,11 @@ jobs:
                 with:
                         push: true
                         tags: |
-                            ${{ inputs.repository }}:edge
+                            ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.repository }}:edge
                         build-args: |
                             version=${{ needs.discover.outputs.version }}
                             NUGET_USERNAME=${{ vars.NUGET_USERNAME }}
-                            NUGET_TOKEN=${{ secrets.ORG_FULL_ACCESS_TOKEN }}
+                            NUGET_TOKEN=${{ secrets.ORG_NUGET_TOKEN }}
                 
             -   name: Tag version
                 if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
